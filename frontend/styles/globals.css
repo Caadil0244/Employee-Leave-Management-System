@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50 text-slate-900;
+}
+
+:root {
+  --color-primary: #2563EB; /* blue-600 */
+  --color-primary-dark: #1D4ED8; /* blue-700 */
+  --color-accent: #06B6D4; /* teal-500 */
+  --color-surface: #FFFFFF;
+  --color-muted: #64748B; /* slate-500 */
+}
