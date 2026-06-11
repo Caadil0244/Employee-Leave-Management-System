@@ -3,7 +3,7 @@
 This repository contains a simple Employee Leave Management System built with:
 - Backend: FastAPI, SQLAlchemy
 - Frontend: Next.js + Tailwind + React
-- Database: PostgreSQL (recommended) or local SQLite for quick dev
+- Database: PostgreSQL
 
 Quick Start (Docker Postgres)
 
