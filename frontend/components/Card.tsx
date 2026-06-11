@@ -9,7 +9,7 @@ interface CardProps {
 export default function Card({ title, children, className = "" }: CardProps) {
   return (
     <div
-      className={`rounded-lg border border-gray-200 bg-white p-6 shadow-sm ${className}`}
+      className={`rounded-lg border border-gray-200 bg-white p-4 sm:p-6 shadow-sm sm:shadow ${className}`}
     >
       {title && (
         <h2 className="mb-4 text-lg font-semibold text-gray-800">{title}</h2>

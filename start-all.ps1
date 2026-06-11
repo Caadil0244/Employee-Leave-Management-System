@@ -1,8 +1,8 @@
 $root = $PSScriptRoot
 Write-Host "=== Starting ELMS ===" -ForegroundColor Cyan
 
-# Stop old processes on 8000 and 3000
-foreach ($port in 8001, 3000) {
+# Stop old processes on 8001 and 3100
+foreach ($port in 8001, 3100) {
     Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue |
         ForEach-Object { Stop-Process -Id $_.OwningProcess -Force -ErrorAction SilentlyContinue }
 }
@@ -28,11 +28,11 @@ try {
 }
 
 # Start frontend in new window
-Write-Host "Starting FRONTEND on http://localhost:3000" -ForegroundColor Green
+Write-Host "Starting FRONTEND on http://localhost:3100" -ForegroundColor Green
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root'; npm run dev"
 
 Write-Host ""
-Write-Host "Open: http://localhost:3000" -ForegroundColor Yellow
+Write-Host "Open: http://localhost:3100" -ForegroundColor Yellow
 Write-Host "Login: admin@elms.com / admin123" -ForegroundColor Yellow
 Write-Host "       manager@elms.com / manager123" -ForegroundColor Yellow
 Write-Host "       employee@elms.com / employee123" -ForegroundColor Yellow

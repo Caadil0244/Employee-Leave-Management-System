@@ -16,7 +16,7 @@ API: http://localhost:8000
 cd frontend
 npm run dev
 ```
-App: http://localhost:3000
+App: http://localhost:3100
 
 **OR from project root:**
 ```powershell

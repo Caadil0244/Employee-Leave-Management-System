@@ -58,7 +58,7 @@ export default function Sidebar({ user, onLogout }: SidebarProps) {
         </div>
       </aside>
 
-      <nav className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-slate-700 bg-slate-900 md:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 z-30 flex border-t border-slate-700 bg-slate-900 md:hidden safe-area-bottom">
         {filtered.map((item) => {
           const active = router.pathname === item.href;
           return (

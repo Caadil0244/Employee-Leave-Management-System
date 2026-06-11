@@ -42,7 +42,8 @@ export default function ApproveLeaves() {
       {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
 
       <Card title="Leave Requests">
-        <div className="overflow-x-auto">
+        {/* Table for medium+ screens */}
+        <div className="hidden sm:block overflow-x-auto table-responsive">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-gray-500">
@@ -95,6 +96,37 @@ export default function ApproveLeaves() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Stacked cards for small screens */}
+        <div className="sm:hidden space-y-3">
+          {leaves.map((leave) => {
+            const isOwn = leave.user_id === user?.id;
+            return (
+              <Card key={leave.id} className="px-4 py-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <p className="font-medium text-gray-900">{leave.user_name}</p>
+                    <p className="text-xs text-gray-500">{leave.employee_id} · {leave.department}</p>
+                    <p className="mt-2 text-sm text-gray-700">{LEAVE_TYPE_LABELS[leave.leave_type]}</p>
+                    <p className="text-xs text-gray-500">{leave.start_date} → {leave.end_date}</p>
+                    <p className="mt-2 text-sm max-w-xs truncate">{leave.reason}</p>
+                  </div>
+                  <div className="text-sm">
+                    <StatusBadge status={leave.status} />
+                  </div>
+                </div>
+                <div className="mt-3 flex gap-2">
+                  {leave.status === "PENDING" && !isOwn && (
+                    <>
+                      <button onClick={() => handleApprove(leave.id)} className="rounded-md bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700">Approve</button>
+                      <button onClick={() => handleReject(leave.id)} className="rounded-md bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700">Reject</button>
+                    </>
+                  )}
+                </div>
+              </Card>
+            );
+          })}
         </div>
       </Card>
     </Layout>

@@ -24,6 +24,14 @@ export default function ApplyLeave() {
   const { register, handleSubmit, watch, formState: { isSubmitting } } =
     useForm<LeaveForm>({ defaultValues: { leave_type: "SANADLE" } });
 
+  // compute today's date string in local timezone for input `min` and max (30 days)
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+  const maxDate = new Date(now);
+  maxDate.setDate(now.getDate() + 30);
+  const maxStr = `${maxDate.getFullYear()}-${pad(maxDate.getMonth() + 1)}-${pad(maxDate.getDate())}`;
+
   const startDate = watch("start_date");
   const endDate = watch("end_date");
 
@@ -42,6 +50,15 @@ export default function ApplyLeave() {
     setError("");
     if (data.end_date <= data.start_date) {
       setError("End date must be greater than start date");
+      return;
+    }
+    // Ensure start date is not in the past (local)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const s = new Date(data.start_date);
+    s.setHours(0, 0, 0, 0);
+    if (s < today) {
+      setError("Start date cannot be in the past");
       return;
     }
     try {
@@ -63,6 +80,8 @@ export default function ApplyLeave() {
             <input
               type="date"
               {...register("start_date", { required: true })}
+              min={todayStr}
+              max={maxStr}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             />
           </div>
@@ -71,6 +90,8 @@ export default function ApplyLeave() {
             <input
               type="date"
               {...register("end_date", { required: true })}
+              min={startDate ? startDate : todayStr}
+              max={maxStr}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
             />
           </div>

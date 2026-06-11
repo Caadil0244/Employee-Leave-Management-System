@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -15,6 +15,17 @@ class LeaveCreate(BaseModel):
     def validate_dates(self):
         if self.end_date <= self.start_date:
             raise ValueError("End date must be greater than start date")
+        # Start date should not be in the past
+        today = date.today()
+        if self.start_date < today:
+            raise ValueError("Start date cannot be in the past")
+        # End date must be within 30 days from today
+        max_allowed = today + timedelta(days=30)
+        if self.end_date > max_allowed:
+            raise ValueError("End date cannot be more than 30 days from today")
+        # Start date also should not be beyond the 30-day window
+        if self.start_date > max_allowed:
+            raise ValueError("Start date cannot be more than 30 days from today")
         return self
 
 
@@ -28,6 +39,10 @@ class LeaveUpdate(BaseModel):
     def validate_dates(self):
         if self.start_date and self.end_date and self.end_date <= self.start_date:
             raise ValueError("End date must be greater than start date")
+        # If provided, start_date should not be in the past
+        today = date.today()
+        if self.start_date and self.start_date < today:
+            raise ValueError("Start date cannot be in the past")
         return self
 
 

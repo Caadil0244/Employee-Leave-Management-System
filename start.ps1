@@ -1,7 +1,7 @@
 Write-Host "=== ELMS Startup ===" -ForegroundColor Cyan
 
-# Free ports 3000 and 8000
-foreach ($port in 3000, 8000) {
+# Free ports 3100 and 8000
+foreach ($port in 3100, 8000) {
     $conns = Get-NetTCPConnection -LocalPort $port -State Listen -ErrorAction SilentlyContinue
     foreach ($c in $conns) {
         Write-Host "Stopping process on port $port (PID $($c.OwningProcess))..."
@@ -20,8 +20,8 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root\backend
 Start-Sleep -Seconds 3
 
 # Start frontend
-Write-Host "Starting frontend on http://localhost:3000 ..." -ForegroundColor Green
+Write-Host "Starting frontend on http://localhost:3100 ..." -ForegroundColor Green
 Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$root'; npm run dev"
 
-Write-Host "`nDone! Open http://localhost:3000" -ForegroundColor Yellow
+Write-Host "`nDone! Open http://localhost:3100" -ForegroundColor Yellow
 Write-Host "Login: admin@elms.com / admin123" -ForegroundColor Yellow

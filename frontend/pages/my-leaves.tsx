@@ -86,7 +86,8 @@ export default function MyLeaves() {
       )}
 
       <Card title="Leave History">
-        <div className="overflow-x-auto">
+        {/* Table for medium+ screens */}
+        <div className="hidden sm:block overflow-x-auto table-responsive">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-gray-500">
@@ -125,6 +126,32 @@ export default function MyLeaves() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Stacked cards for small screens */}
+        <div className="sm:hidden space-y-3">
+          {leaves.map((leave) => (
+            <Card key={leave.id} className="px-4 py-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-medium text-gray-900">{LEAVE_TYPE_LABELS[leave.leave_type] || leave.leave_type}</p>
+                  <p className="text-xs text-gray-500">{leave.start_date} → {leave.end_date} · {leave.duration_days} day(s)</p>
+                  <p className="mt-2 text-sm text-gray-700 max-w-xs">{leave.reason}</p>
+                </div>
+                <div className="text-sm">
+                  <StatusBadge status={leave.status} />
+                </div>
+              </div>
+              <div className="mt-3 flex gap-2">
+                {leave.status === "PENDING" && (
+                  <>
+                    <button onClick={() => startEdit(leave)} className="text-sm text-gray-700 hover:underline">Edit</button>
+                    <button onClick={() => handleDelete(leave.id)} className="text-sm text-red-600 hover:underline">Delete</button>
+                  </>
+                )}
+              </div>
+            </Card>
+          ))}
         </div>
       </Card>
     </Layout>

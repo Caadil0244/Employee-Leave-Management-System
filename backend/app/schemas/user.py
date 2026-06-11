@@ -1,10 +1,11 @@
 from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
 from app.models.user import UserRole
 
 
 class EmployeeCreate(BaseModel):
-    employee_id: str = Field(min_length=2, max_length=50)
+    employee_id: Optional[str] = Field(default=None, min_length=2, max_length=50)
     name: str = Field(min_length=2, max_length=100)
     email: EmailStr
     telephone: str = Field(min_length=5, max_length=20)

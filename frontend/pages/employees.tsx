@@ -32,23 +32,35 @@ export default function Employees() {
     try {
       if (editingId) {
         const payload: Partial<EmployeeForm> = {
-          employee_id: data.employee_id,
           name: data.name,
           email: data.email,
           telephone: data.telephone,
           department: data.department,
           role: data.role,
         };
+        if (data.employee_id) payload.employee_id = data.employee_id;
         if (data.password) payload.password = data.password;
         await employeeApi.update(editingId, payload);
       } else {
-        await employeeApi.create(data);
+        const payload: any = {
+          name: data.name,
+          email: data.email,
+          telephone: data.telephone,
+          department: data.department,
+          password: data.password,
+          role: data.role,
+        };
+        if (data.employee_id) payload.employee_id = data.employee_id;
+        await employeeApi.create(payload);
       }
       reset({ employee_id: "", name: "", email: "", telephone: "", department: "General", password: "", role: "EMPLOYEE" });
       setEditingId(null);
       load();
     } catch {
-      setError("Operation failed. Check ID/email is unique.");
+      // Show backend error if available
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const msg = (error as any)?.response?.data?.detail || "Operation failed. Check ID/email is unique.";
+      setError(msg);
     }
   };
 
@@ -75,13 +87,14 @@ export default function Employees() {
 
       <Card title={editingId ? "Edit Employee" : "Add Employee"} className="mb-6">
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 sm:grid-cols-2">
-          <input {...register("employee_id", { required: true })} placeholder="Employee ID"
-            className="rounded-md border border-gray-300 px-3 py-2 text-sm" />
+          <input {...register("employee_id")} placeholder="Auto-generated"
+            disabled
+            className="rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500" />
           <input {...register("name", { required: true })} placeholder="Name"
             className="rounded-md border border-gray-300 px-3 py-2 text-sm" />
           <input {...register("email", { required: true })} placeholder="Email" type="email"
             className="rounded-md border border-gray-300 px-3 py-2 text-sm" />
-          <input {...register("telephone", { required: true })} placeholder="Telephone"
+          <input {...register("telephone", { required: true })}
             className="rounded-md border border-gray-300 px-3 py-2 text-sm" />
           <select {...register("department")} className="rounded-md border border-gray-300 px-3 py-2 text-sm">
             {DEPARTMENTS.map((d) => <option key={d} value={d}>{d}</option>)}
@@ -108,7 +121,8 @@ export default function Employees() {
       </Card>
 
       <Card title="All Employees">
-        <div className="overflow-x-auto">
+        {/* Table for medium+ screens */}
+        <div className="hidden sm:block overflow-x-auto table-responsive">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-gray-200 text-gray-500">
@@ -136,6 +150,25 @@ export default function Employees() {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* Stacked cards for small screens */}
+        <div className="sm:hidden space-y-3">
+          {employees.map((emp) => (
+            <Card key={emp.id} className="px-4 py-4">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="font-medium text-gray-900">{emp.name}</p>
+                  <p className="text-xs text-gray-500">{emp.employee_id} · {emp.department}</p>
+                </div>
+                <div className="text-sm text-gray-700">{emp.role}</div>
+              </div>
+              <div className="mt-3 flex gap-3">
+                <button onClick={() => startEdit(emp)} className="text-sm text-gray-700 hover:underline">Edit</button>
+                <button onClick={() => handleDelete(emp.id)} className="text-sm text-red-600 hover:underline">Delete</button>
+              </div>
+            </Card>
+          ))}
         </div>
       </Card>
     </Layout>

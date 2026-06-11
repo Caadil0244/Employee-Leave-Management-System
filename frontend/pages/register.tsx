@@ -22,12 +22,17 @@ export default function Register() {
   const onSubmit = async (data: RegisterForm) => {
     setError("");
     try {
-      await authApi.register(data);
+      const payload: any = { ...data };
+      if (!payload.employee_id) delete payload.employee_id;
+      await authApi.register(payload);
       const res = await authApi.login({ email: data.email, password: data.password });
       localStorage.setItem("token", res.data.access_token);
       router.push("/dashboard");
     } catch {
-      setError("Registration failed. ID or email may already exist.");
+      // Show backend error if available
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const msg = (error as any)?.response?.data?.detail || "Registration failed. ID or email may already exist.";
+      setError(msg);
     }
   };
 
@@ -40,8 +45,9 @@ export default function Register() {
         <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">Employee ID</label>
-            <input {...register("employee_id", { required: true })} placeholder="EMP-004"
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
+            <input {...register("employee_id")} placeholder="Auto-generated"
+              disabled
+              className="mt-1 w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-500" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Name</label>
@@ -55,7 +61,7 @@ export default function Register() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Telephone</label>
-            <input {...register("telephone", { required: true })} placeholder="0612345678"
+            <input {...register("telephone", { required: true })}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm" />
           </div>
           <div>

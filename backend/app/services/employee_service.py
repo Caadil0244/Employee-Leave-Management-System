@@ -4,6 +4,22 @@ from sqlalchemy.orm import Session
 from app.core.security import hash_password
 from app.models.user import User
 from app.schemas.user import EmployeeCreate, EmployeeUpdate
+import re
+
+
+def _generate_employee_id(db: Session) -> str:
+    users = db.query(User.employee_id).all()
+    max_num = 0
+    for (eid,) in users:
+        if not eid:
+            continue
+        m = re.search(r"EMP-(\d+)$", eid)
+        if m:
+            n = int(m.group(1))
+            if n > max_num:
+                max_num = n
+    next_num = max_num + 1
+    return f"EMP-{next_num:03d}"
 
 
 def list_employees(db: Session) -> list[User]:
@@ -13,11 +29,16 @@ def list_employees(db: Session) -> list[User]:
 def create_employee(db: Session, data: EmployeeCreate) -> User:
     if db.query(User).filter(User.email == data.email).first():
         raise HTTPException(status_code=400, detail="Email already exists")
-    if db.query(User).filter(User.employee_id == data.employee_id).first():
-        raise HTTPException(status_code=400, detail="Employee ID already exists")
+    # Auto-generate employee_id when not provided
+    eid = data.employee_id
+    if not eid:
+        eid = _generate_employee_id(db)
+    else:
+        if db.query(User).filter(User.employee_id == eid).first():
+            raise HTTPException(status_code=400, detail="Employee ID already exists")
 
     user = User(
-        employee_id=data.employee_id,
+        employee_id=eid,
         name=data.name,
         email=data.email,
         telephone=data.telephone,

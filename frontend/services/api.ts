@@ -77,7 +77,7 @@ export const DEMO_ACCOUNTS = [
 
 export const authApi = {
   register: (data: {
-    employee_id: string;
+    employee_id?: string;
     name: string;
     email: string;
     telephone: string;
@@ -92,7 +92,7 @@ export const authApi = {
 export const employeeApi = {
   list: () => api.get<User[]>("/employees"),
   create: (data: {
-    employee_id: string;
+    employee_id?: string;
     name: string;
     email: string;
     telephone: string;

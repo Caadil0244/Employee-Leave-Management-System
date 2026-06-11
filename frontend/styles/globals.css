@@ -13,3 +13,13 @@ body {
   --color-surface: #FFFFFF;
   --color-muted: #64748B; /* slate-500 */
 }
+
+/* Small responsive helpers */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0.5rem);
+}
+
+/* Make horizontal overflow smooth on touch devices */
+.table-responsive {
+  -webkit-overflow-scrolling: touch;
+}

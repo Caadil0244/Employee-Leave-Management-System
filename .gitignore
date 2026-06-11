@@ -1,16 +1,17 @@
-# dependencies
-node_modules/
-frontend/node_modules/
-
-# next build
-.next/
-frontend/.next/
-
-# python
+# Python
+__pycache__/
+*.pyc
 .venv/
 
-# env
-.env
+# Database
+*.db
 
-# logs
-*.log
+# Environment files
+.env
+.env*
+
+# Node.js
+node_modules/
+
+# Next.js
+.next/
